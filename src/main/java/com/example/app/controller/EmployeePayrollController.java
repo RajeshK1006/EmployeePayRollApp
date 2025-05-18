@@ -4,6 +4,10 @@ package com.example.app.controller;
 
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
+import com.example.app.dto.EmployeePayrollDTO;
+import com.example.app.model.EmployeePayrollData;
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/employeepayrollservice")
@@ -19,10 +23,17 @@ public class EmployeePayrollController {
         return "Get employee data for ID: " + id;
     }
 
+//    @PostMapping("/create")
+//    public String createEmployee(@RequestBody Map<String, Object> employeeData) {
+//        return "Created employee: " + employeeData;
+//    }
+    // updated 
+    
     @PostMapping("/create")
-    public String createEmployee(@RequestBody Map<String, Object> employeeData) {
-        return "Created employee: " + employeeData;
+    public EmployeePayrollData createEmployee(@Valid @RequestBody EmployeePayrollDTO empDTO) {
+        return new EmployeePayrollData(empDTO.getName(), empDTO.getSalary());
     }
+
 
     @PutMapping("/update")
     public String updateEmployee(@RequestBody Map<String, Object> employeeData) {
