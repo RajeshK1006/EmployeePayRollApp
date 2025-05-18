@@ -1,36 +1,51 @@
+
 package com.example.app.service;
 
-
-
-import org.springframework.stereotype.Service;
 import com.example.app.dto.EmployeePayrollDTO;
 import com.example.app.model.EmployeePayrollData;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class EmployeePayrollServiceImpl implements EmployeePayrollService {
 
+    private final List<EmployeePayrollData> employeeList = new ArrayList<>();
+    
+
     @Override
-    public String getAllEmployees() {
-        return "Get all employee payroll data";
+    public List<EmployeePayrollData> getAllEmployees() {
+        return employeeList;
     }
 
     @Override
-    public String getEmployeeById(int id) {
-        return "Get employee data for ID: " + id;
+    public EmployeePayrollData getEmployeeById(int id) {
+        return employeeList.stream()
+                .filter(emp -> emp.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
     public EmployeePayrollData createEmployee(EmployeePayrollDTO empDTO) {
-        return new EmployeePayrollData(empDTO.getName(), empDTO.getSalary());
+        EmployeePayrollData newEmployee = new EmployeePayrollData(empDTO.getName(), empDTO.getSalary());
+        employeeList.add(newEmployee);
+        return newEmployee;
     }
 
     @Override
-    public String updateEmployee(Object employeeData) {
-        return "Updated employee: " + employeeData;
+    public EmployeePayrollData updateEmployee(int id, EmployeePayrollDTO empDTO) {
+        EmployeePayrollData employee = getEmployeeById(id);
+        if (employee != null) {
+            employee.setName(empDTO.getName());
+            employee.setSalary(empDTO.getSalary());
+        }
+        return employee;
     }
 
     @Override
-    public String deleteEmployee(int id) {
-        return "Deleted employee with ID: " + id;
+    public void deleteEmployee(int id) {
+        employeeList.removeIf(emp -> emp.getId() == id);
     }
 }
