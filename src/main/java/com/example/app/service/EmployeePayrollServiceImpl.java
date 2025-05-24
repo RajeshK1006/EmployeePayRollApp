@@ -1,7 +1,7 @@
-
 package com.example.app.service;
 
 import com.example.app.dto.EmployeePayrollDTO;
+import com.example.app.exception.EmployeeNotFoundException;
 import com.example.app.model.EmployeePayrollData;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,6 @@ import java.util.List;
 public class EmployeePayrollServiceImpl implements EmployeePayrollService {
 
     private final List<EmployeePayrollData> employeeList = new ArrayList<>();
-    
 
     @Override
     public List<EmployeePayrollData> getAllEmployees() {
@@ -24,7 +23,7 @@ public class EmployeePayrollServiceImpl implements EmployeePayrollService {
         return employeeList.stream()
                 .filter(emp -> emp.getId() == id)
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + id + " not found"));
     }
 
     @Override
@@ -37,15 +36,14 @@ public class EmployeePayrollServiceImpl implements EmployeePayrollService {
     @Override
     public EmployeePayrollData updateEmployee(int id, EmployeePayrollDTO empDTO) {
         EmployeePayrollData employee = getEmployeeById(id);
-        if (employee != null) {
-            employee.setName(empDTO.getName());
-            employee.setSalary(empDTO.getSalary());
-        }
+        employee.setName(empDTO.getName());
+        employee.setSalary(empDTO.getSalary());
         return employee;
     }
 
     @Override
     public void deleteEmployee(int id) {
-        employeeList.removeIf(emp -> emp.getId() == id);
+        EmployeePayrollData employee = getEmployeeById(id);
+        employeeList.remove(employee);
     }
 }
