@@ -17,5 +17,5 @@ public class EmployeePayrollDTO {
     private String name;
 
     @Min(value = 500, message = "Salary should be more than 500")
-    private long salary;
+    private Double salary;
 }
